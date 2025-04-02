@@ -38,9 +38,9 @@
     let end = $state();
     let refs = $state([]);
     let debounceHandle = {};
-    let allDaySlotHeight = 40;
+    //let allDaySlotHeight = 100;
 
-    let { chunks, bgChunks , longChunks, week_array} = $derived.by(() => {
+    let { chunks, bgChunks , longChunks, week_array, bg_week_array, allDaySlotHeight} = $derived.by(() => {
 
             let chunks = [];
             let bgChunks = [];
@@ -66,6 +66,9 @@
            //console.log( "bgChanks", bgChunks );
            //console.log( "longChunks", longChunks );
 
+           //--------------------------------------------
+           // week_array
+
            let event_max = chunks.length
            let week_array = [];
            for(var i=0; i<7; i++) {
@@ -78,7 +81,9 @@
                    let event_no = 0
                    for ( let chunk of chunks) {
                         event_no++;
-                        //console.log($state.snapshot(chunk.event.title))
+                        //console.log("chunk.start", chunk.start)
+                        //console.log("chunk.event.title", chunk.event.title)
+                        //console.log("chunk.days", chunk.days)
                         let diffMilliSec = chunk.start -start;
                         let week_index = parseInt(diffMilliSec / 1000 / 60 / 60 / 24);
                         //console.log("week_index:",week_index, chunk.days)
@@ -108,12 +113,89 @@
                  }
                  console.log(week_array)
            }
-           //console.log(week_array)
-           return { chunks, bgChunks, longChunks , week_array};
+
+           //--------------------------------------------
+           // bg_week_array
+
+           let bg_event_max = bgChunks.length
+           let bg_week_array = [];
+           for(var i=0; i<7; i++) {
+             bg_week_array.push(Array(bg_event_max).fill(0));
+           }
+
+           if (bgChunks.length > 0) { 
+                 //console.log(week_array)
+                   //console.log(chunks.length)
+                   let event_no = 0
+                   for ( let chunk of bgChunks) {
+                        event_no++;
+                        console.log("chunk.start", chunk.start)
+                        console.log("chunk.event.title", chunk.event.title)
+                        console.log("chunk.days", chunk.days)
+
+                        let diffMilliSec = chunk.start -start;
+                        let week_index = parseInt(diffMilliSec / 1000 / 60 / 60 / 24);
+                        //console.log("week_index:",week_index, chunk.days)
+                        for ( var c=0; c< bgChunks.length ; c++) {
+                            if (bg_week_array[week_index][c]== 0) {
+                                bg_week_array[week_index][c] = event_no;
+                                for ( var s=1; s< chunk.days ; s++) {
+                                 //week_array[week_index+s][c] = event_no;
+                                 bg_week_array[week_index+s][c] = -1;
+                                }
+                                break
+                            } 
+                            
+
+                        }
+
+                   }
+                 for(var i=0; i<7; i++) {
+                     for (let x = bg_week_array[i].length -1 ; x => 0; x--) {
+                          //console.log(bg_week_array[i][x])
+                          if (bg_week_array[i][x] != 0) {
+                            //bg_week_array[i][x+1] = -3
+                            break
+                          }
+                            bg_week_array[i][x] = -3
+                     }
+                 }
+                 console.log(bg_week_array)
+           }
+                 let slotn = 0
+                 for(var i=0; i<7; i++) {
+                     for (let x = 0;  x < bg_week_array[i].length ;x++) {
+                          if (bg_week_array[i][x] != -3) {
+                                   if (slotn < x + 1) {
+                                        slotn = x + 1
+                                   }
+                          }
+                     }
+                 }
+                 console.log("slotn:", slotn)
+                let allDaySlotHeight = 30 * slotn;
+
+           return { chunks, bgChunks, longChunks , week_array, bg_week_array, allDaySlotHeight};
 
 
     })
-
+/*
+    let allDaySlotHeight = 100;
+    let slotn  = $derived.by(() => {
+                 let slotn = 0
+                 for(var i=0; i<7; i++) {
+                     for (let x = 0;  x < bg_week_array[i].length ;x++) {
+                          if (bg_week_array[i][x] == -3) {
+                                   if (slotn < x -1) {
+                                        slotn = x -1
+                                   }
+                          }
+                     }
+                 }
+                 console.log("slotn:", slotn)
+                return slotn
+     })
+*/
     _events.subscribe((v) => {
         chunks = [];
         bgChunks = [];
@@ -209,7 +291,7 @@
 >
     {#key chunks}
         {#each dates as date, i}
-            <Day {date} {chunks} {bgChunks} {longChunks} {iChunks} {dates} {week_array} {i}  {allDaySlotHeight} bind:this={refs[i]} />
+            <Day {date} {chunks} {bgChunks} {longChunks} {iChunks} {dates} {week_array} {bg_week_array} {i}  {allDaySlotHeight} bind:this={refs[i]} />
         {/each}
     {/key}
 </div>

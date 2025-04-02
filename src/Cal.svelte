@@ -76,7 +76,8 @@
 
     function createEvents() {
         let days = [];
-        for (let i = -7; i < 7; ++i) {
+        //for (let i = -7; i < 7; ++i) {
+        for (let i = -7; i < 14; ++i) {
             let day = new Date();
             let diff = i - day.getDay();
             day.setDate(day.getDate() + diff);
@@ -247,12 +248,38 @@
             },
 */
             { start: days[5] + " 18:00", end: days[6] + " 21:00", resourceId: 2, title: "GS2", color: "#B29DD9" },
+            { start: days[5] + " 18:00", end: days[7] + " 21:00", resourceId: 2, title: "GS3", color: "#99ffff" },
+            { start: days[7] + " 18:00", end: days[8] + " 21:00", resourceId: 2, title: "GS4", color: "#c0c0c0" },
             {
-                start: days[1],
-                end: days[3],
+                start: days[0] + " 10:00",
+                end: days[0] + " 10:00",
                 resourceId: 1,
                 title: "All-day events can be displayed at the top",
                 color: "#B29DD9",
+                allDay: true,
+            },
+            {
+                start: days[1] + " 10:00",
+                end: days[4] + " 10:00",
+                resourceId: 1,
+                title: "All-day events can be displayed at the top",
+                color: "#B29DD9",
+                allDay: true,
+            },
+            {
+                start: days[3] + " 10:00",
+                end: days[4] + " 10:00",
+                resourceId: 1,
+                title: "All-day events can be displayed at the top",
+                color: "#ff9999",
+                allDay: true,
+            },
+            {
+                start: days[4] + " 10:00",
+                end: days[6] + " 10:00",
+                resourceId: 1,
+                title: "All-day events can be displayed at the top",
+                color: "#66ffff",
                 allDay: true,
             },
 

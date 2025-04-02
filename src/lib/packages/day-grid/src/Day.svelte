@@ -25,7 +25,7 @@
     import Popup from "./Popup.svelte";
 
     //let { date, chunks, bgChunks, longChunks, iChunks = [], dates , allDaySlotHeight = 0 } = $props();
-    let { date, chunks, bgChunks, longChunks, iChunks = [], dates ,  week_array, i,  allDaySlotHeight = 0} = $props();
+    let { date, chunks, bgChunks, longChunks, iChunks = [], dates ,  week_array, bg_week_array, i,  allDaySlotHeight = 0} = $props();
     let index = i;
 
     // bgChunks   allDay task
@@ -99,10 +99,33 @@
         untrack(() => {
             if (!disabled) {
                 //console.log("longChunks",longChunks)
+                //console.log("bgChunks",bgChunks)
                 dayChunks = [];
-                dayBgChunks = bgChunks.filter((bgChunk) => datesEqual(bgChunk.date, date));
+                //dayBgChunks = bgChunks.filter((bgChunk) => datesEqual(bgChunk.date, date));
+                dayBgChunks = [];
                 hiddenEvents.clear();
                 hiddenEvents = hiddenEvents;
+
+                for (let no of bg_week_array[index]) {
+                      //console.log(no)
+                      if (no == 0 || no == -1 ) {
+                           //console.log("skip")
+                           let chunk2 =  JSON.parse(JSON.stringify(bgChunks[0]));
+			    chunk2.event.title = "SPACE"
+			    chunk2.space = true;
+                            dayBgChunks.push(chunk2);
+                      } else if (no == -3 ) {
+                          break
+                      } else {
+                           //console.log("draw", no)
+                           let chunk = bgChunks[no-1]
+                           //console.log(chunk)
+			   chunk.space = false;
+                           dayBgChunks.push(chunk);
+                     }
+                 
+
+                }
  if (true) {               
                 for (let no of week_array[index]) {
                       //console.log(no)
@@ -246,6 +269,8 @@
       .allDaySlot { height:var(--allDaySlotHeight)}
 </style>
 
+
+
 <div
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{otherMonth
@@ -277,7 +302,14 @@
     <div class="[{$theme.bgEvents} allDaySlot" >
         {#if !disabled}
             {#each dayBgChunks as chunk, i (chunk.event)}
+<!--
                 <Event {chunk}  {dates} bind:this={refs[i]} />
+-->
+	        {#if !chunk.space }
+                     <Event {chunk}  {dates} bind:this={refs[i]} />
+                {:else}
+		    <EventSpace/>
+                {/if}
             {/each}
         {/if}
     </div>

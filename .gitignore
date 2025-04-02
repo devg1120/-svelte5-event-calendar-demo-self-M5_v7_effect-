@@ -1,5 +1,5 @@
 node_modules
-
+.swp
 # Output
 .output
 .vercel
