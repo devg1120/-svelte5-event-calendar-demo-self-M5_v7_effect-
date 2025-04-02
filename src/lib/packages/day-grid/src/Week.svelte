@@ -34,11 +34,25 @@
     //    longChunks = $state(),
     let  iChunks = $state([]);
 
-    let start = $state();
-    let end = $state();
+    //let start = $state();
+    //let end = $state();
     let refs = $state([]);
     let debounceHandle = {};
     //let allDaySlotHeight = 100;
+    //let start = $state(limitToRange(dates[0], $validRange));
+    //let  end =  $state(addDay(cloneDate(limitToRange(dates.at(-1), $validRange))));
+     //console.log(start)
+     //console.log(end)
+
+    let  start = $derived.by(() => {
+            return limitToRange(dates[0], $validRange);
+
+    })
+    let  end  = $derived.by(() => {
+            return addDay(cloneDate(limitToRange(dates.at(-1), $validRange)));
+
+    })
+
 
     let { chunks, bgChunks , longChunks, week_array, bg_week_array, allDaySlotHeight} = $derived.by(() => {
 
@@ -111,7 +125,7 @@
                             week_array[i][x] = -3
                      }
                  }
-                 console.log(week_array)
+                 //console.log(week_array)
            }
 
            //--------------------------------------------
@@ -129,9 +143,9 @@
                    let event_no = 0
                    for ( let chunk of bgChunks) {
                         event_no++;
-                        console.log("chunk.start", chunk.start)
-                        console.log("chunk.event.title", chunk.event.title)
-                        console.log("chunk.days", chunk.days)
+                        //console.log("chunk.start", chunk.start)
+                        //console.log("chunk.event.title", chunk.event.title)
+                        //console.log("chunk.days", chunk.days)
 
                         let diffMilliSec = chunk.start -start;
                         let week_index = parseInt(diffMilliSec / 1000 / 60 / 60 / 24);
@@ -160,7 +174,7 @@
                             bg_week_array[i][x] = -3
                      }
                  }
-                 console.log(bg_week_array)
+                 //console.log(bg_week_array)
            }
                  let slotn = 0
                  for(var i=0; i<7; i++) {
@@ -172,8 +186,15 @@
                           }
                      }
                  }
-                 console.log("slotn:", slotn)
+                 //console.log("slotn:", slotn)
                 let allDaySlotHeight = 30 * slotn;
+
+            //console.log(start)
+            //console.log(end)
+            //console.log(chunks)
+           console.log( "dates",dates  );
+           console.log( "start",start  );
+           console.log( "chanks",chunks  );
 
            return { chunks, bgChunks, longChunks , week_array, bg_week_array, allDaySlotHeight};
 
@@ -215,13 +236,16 @@
         longChunks = prepareEventChunks(chunks, $hiddenDays);
         reposition();
     });
-
+/*
     $effect(() => {
         untrack(() => {
             start = limitToRange(dates[0], $validRange);
             end = addDay(cloneDate(limitToRange(dates.at(-1), $validRange)));
+           console.log(start)
         });
     });
+*/
+
 
     //let debounceHandle = {};
     function reposition() {
