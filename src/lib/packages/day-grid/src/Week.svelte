@@ -34,8 +34,8 @@
     //    longChunks = $state(),
     let  iChunks = $state([]);
 
-    //let start = $state();
-    //let end = $state();
+    let start = $state();
+    let end = $state();
     let refs = $state([]);
     let debounceHandle = {};
     //let allDaySlotHeight = 100;
@@ -43,7 +43,7 @@
     //let  end =  $state(addDay(cloneDate(limitToRange(dates.at(-1), $validRange))));
      //console.log(start)
      //console.log(end)
-
+/*
     let  start = $derived.by(() => {
             return limitToRange(dates[0], $validRange);
 
@@ -52,7 +52,7 @@
             return addDay(cloneDate(limitToRange(dates.at(-1), $validRange)));
 
     })
-
+*/
 
     let { chunks, bgChunks , longChunks, week_array, bg_week_array, allDaySlotHeight} = $derived.by(() => {
 
@@ -192,9 +192,11 @@
             //console.log(start)
             //console.log(end)
             //console.log(chunks)
-           console.log( "dates",dates  );
+           //console.log( "dates",dates  );
            console.log( "start",start  );
+           console.log( "chanks.length",chunks.length  );
            console.log( "chanks",chunks  );
+           //console.log( week_array  );
 
            return { chunks, bgChunks, longChunks , week_array, bg_week_array, allDaySlotHeight};
 
@@ -236,15 +238,15 @@
         longChunks = prepareEventChunks(chunks, $hiddenDays);
         reposition();
     });
-/*
-    $effect(() => {
-        untrack(() => {
+
+    $effect.pre(() => {
+        //untrack(() => {
             start = limitToRange(dates[0], $validRange);
             end = addDay(cloneDate(limitToRange(dates.at(-1), $validRange)));
            console.log(start)
-        });
+        //});
     });
-*/
+
 
 
     //let debounceHandle = {};
